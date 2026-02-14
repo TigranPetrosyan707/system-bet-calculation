@@ -1,7 +1,7 @@
-export type SystemType = {
+export interface SystemType {
   requiredWins: number;
   totalSelections: number;
-};
+}
 
 export interface BetInput {
   odds: number[];
@@ -23,4 +23,3 @@ export interface SystemBetResult {
   totalStake: number;
   profit: number;
 }
-
