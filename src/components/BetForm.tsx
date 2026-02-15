@@ -15,6 +15,22 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
+    const requiredWinsNum = parseInt(requiredWins)
+    if (!isNaN(requiredWinsNum) && requiredWinsNum > 0) {
+      const minTotalSelections = requiredWinsNum + 1
+      setTotalSelections(prev => {
+        const currentTotalSelections = parseInt(prev)
+        if (prev === '' || isNaN(currentTotalSelections) || currentTotalSelections < minTotalSelections) {
+          return minTotalSelections.toString()
+        }
+        return prev
+      })
+    } else {
+      setTotalSelections('')
+    }
+  }, [requiredWins])
+
+  useEffect(() => {
     const totalSelectionsNum = parseInt(totalSelections)
     if (!isNaN(totalSelectionsNum) && totalSelectionsNum > 0) {
       setOdds(prevOdds => {
@@ -33,6 +49,71 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
     const newOdds = [...odds]
     newOdds[index] = value
     setOdds(newOdds)
+  }
+
+  const handleTotalSelectionsChange = (value: string) => {
+    const requiredWinsNum = parseInt(requiredWins)
+    const minTotalSelections = !isNaN(requiredWinsNum) && requiredWinsNum > 0 ? requiredWinsNum + 1 : 1
+    
+    if (value === '') {
+      setTotalSelections('')
+      return
+    }
+
+    const newValue = parseInt(value)
+    if (!isNaN(newValue)) {
+      if (newValue < minTotalSelections) {
+        setTotalSelections(minTotalSelections.toString())
+      } else {
+        setTotalSelections(value)
+      }
+    } else {
+      setTotalSelections(value)
+    }
+  }
+
+  const areOddsEnabled = () => {
+    const requiredWinsNum = parseInt(requiredWins)
+    const totalSelectionsNum = parseInt(totalSelections)
+    return (
+      !isNaN(requiredWinsNum) && 
+      requiredWinsNum > 0 && 
+      !isNaN(totalSelectionsNum) && 
+      totalSelectionsNum > 0 &&
+      totalSelectionsNum > requiredWinsNum
+    )
+  }
+
+  const isStakeEnabled = () => {
+    if (!areOddsEnabled()) return false
+    const totalSelectionsNum = parseInt(totalSelections)
+    if (isNaN(totalSelectionsNum) || totalSelectionsNum <= 0) return false
+    if (odds.length !== totalSelectionsNum) return false
+    return odds.every(odd => {
+      const oddNum = parseFloat(odd)
+      return odd.trim() !== '' && !isNaN(oddNum) && oddNum > 0
+    })
+  }
+
+  const isFormValid = () => {
+    const requiredWinsNum = parseInt(requiredWins)
+    const totalSelectionsNum = parseInt(totalSelections)
+    const stakeNum = parseFloat(stake)
+
+    if (isNaN(requiredWinsNum) || requiredWinsNum < 1) return false
+    if (isNaN(totalSelectionsNum) || totalSelectionsNum < 1) return false
+    if (totalSelectionsNum <= requiredWinsNum) return false
+
+    if (odds.length !== totalSelectionsNum) return false
+    const allOddsValid = odds.every(odd => {
+      const oddNum = parseFloat(odd)
+      return odd.trim() !== '' && !isNaN(oddNum) && oddNum > 0
+    })
+    if (!allOddsValid) return false
+
+    if (isNaN(stakeNum) || stakeNum <= 0) return false
+
+    return true
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -112,8 +193,9 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
               type="number"
               label="Total Selections"
               value={totalSelections}
-              onChange={(e) => setTotalSelections(e.target.value)}
-              min="1"
+              onChange={(e) => handleTotalSelectionsChange(e.target.value)}
+              min={requiredWins ? (parseInt(requiredWins) + 1).toString() : "1"}
+              disabled={!requiredWins || isNaN(parseInt(requiredWins)) || parseInt(requiredWins) < 1}
               required
             />
           </div>
@@ -136,6 +218,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
                 value={odd}
                 onChange={(e) => handleOddChange(index, e.target.value)}
                 placeholder={`Odd ${index + 1}`}
+                disabled={!areOddsEnabled()}
                 required
               />
             ))}
@@ -150,6 +233,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
             label="Total Stake"
             value={stake}
             onChange={(e) => setStake(e.target.value)}
+            disabled={!isStakeEnabled()}
             required
           />
         </div>
@@ -165,6 +249,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
           variant="primary" 
           size="lg" 
           className="w-full"
+          disabled={!isFormValid()}
         >
           <FaCalculator className="mr-2" />
           Calculate Results
