@@ -1,73 +1,152 @@
-# React + TypeScript + Vite
+# System Bet Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A system bet calculator for calculating potential winnings. The application allows you to calculate all possible combinations, payouts, and profits for system bets.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **System Bet Calculation** - Support for various systems (e.g., 2/3, 3/5, etc.)
+- **Dark Mode** - Toggle between light and dark themes
+- **Form Validation** - Validation of all input data
+- **Responsive Design** - Works on all devices
+- **Smooth Transitions** - Animations when switching themes
+- **Loading Indicator** - Visual feedback during calculation
 
-## React Compiler
+## 📋 Requirements
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js (version 20.19.0 or higher, or 22.12.0+)
+- npm or yarn
 
-## Expanding the ESLint configuration
+## 🛠️ Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository or navigate to the project folder:
+```bash
+cd system-bet-calculator
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+```bash
+npm install
 ```
+
+## 🏃 Running the Application
+
+### Development Mode
+
+Start the dev server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173` (or another port if 5173 is occupied).
+
+### Production Build
+
+Create a production build:
+```bash
+npm run build
+```
+
+The built files will be in the `dist` folder.
+
+### Preview Production Build
+
+After building, you can preview the result:
+```bash
+npm run preview
+```
+
+## 🧪 Testing
+
+Run tests:
+```bash
+npm test
+```
+
+Run tests in watch mode:
+```bash
+npm test -- --watch
+```
+
+## 📁 Project Structure
+
+```
+system-bet-calculator/
+├── src/
+│   ├── assets/          # Static resources (logo)
+│   ├── components/      # React components
+│   │   ├── BetForm/     # Bet form components
+│   │   └── shared/      # Reusable components
+│   ├── hooks/           # Custom React hooks
+│   ├── types/           # TypeScript types
+│   ├── utils/           # Utilities and helper functions
+│   ├── App.tsx          # Main application component
+│   └── main.tsx         # Entry point
+├── public/              # Public files
+├── index.html           # HTML template
+└── package.json         # Dependencies and scripts
+```
+
+## 🎯 Usage
+
+1. **Enter System Type:**
+   - Required Wins (e.g., 2) - Number of required wins
+   - Total Selections (e.g., 3) - Total number of selections
+   - Example: 2/3 means 2 wins from 3 selections
+
+2. **Enter Odds:**
+   - After filling in the system type, fields for entering odds will appear
+   - Enter the odds for each selection
+
+3. **Enter Total Stake:**
+   - After filling in all odds, a field for total stake will appear
+   - Enter the amount you want to bet
+
+4. **Calculate Results:**
+   - Click the "Calculate Results" button
+   - You will see all possible combinations, payouts, and profit
+
+## 🎨 Dark Mode
+
+Click the theme toggle button in the top right corner to switch between light and dark themes. Your choice is saved in localStorage.
+
+## 🛠️ Technologies
+
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Styling
+- **Vitest** - Testing framework
+- **React Testing Library** - Component testing
+
+## 📝 Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run linter
+- `npm test` - Run tests
+
+## 📦 Main Dependencies
+
+- `react` & `react-dom` - React library
+- `react-icons` - Icons
+- `clsx` & `tailwind-merge` - Class name utilities
+- `tailwindcss` - CSS framework
+
+## 🔧 Configuration
+
+- `vite.config.ts` - Vite configuration
+- `tailwind.config.js` - Tailwind CSS configuration
+- `tsconfig.json` - TypeScript configuration
+
+## 📄 License
+
+Project created for personal use.
+
+## 👤 Author
+
+System Bet Calculator
+
+---
+
+**Note:** Make sure you have the correct Node.js version installed before running the project.
