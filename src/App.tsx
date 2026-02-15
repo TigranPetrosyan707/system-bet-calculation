@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { FaChartBar } from 'react-icons/fa'
-import { BetForm, ResultCard, CombinationTable, ThemeToggle } from '@/components'
+import { BetForm, ResultCard, CombinationTable, ThemeToggle, LoadingSpinner } from '@/components'
 import { useSystemBet } from '@/hooks/useSystemBet'
 import type { BetInput } from '@/types/bet.types'
 import logo from '@/assets/logo.jpg'
 
 function App() {
   const [betInput, setBetInput] = useState<BetInput | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const result = useSystemBet(betInput)
 
   const handleCalculate = (data: { 
@@ -14,15 +15,20 @@ function App() {
     system: { requiredWins: number; totalSelections: number }
     stake: number 
   }) => {
-    const betInputData: BetInput = {
-      odds: data.odds,
-      system: {
-        requiredWins: data.system.requiredWins,
-        totalSelections: data.system.totalSelections,
-      },
-      stake: data.stake,
-    }
-    setBetInput(betInputData)
+    setIsLoading(true)
+    
+    setTimeout(() => {
+      const betInputData: BetInput = {
+        odds: data.odds,
+        system: {
+          requiredWins: data.system.requiredWins,
+          totalSelections: data.system.totalSelections,
+        },
+        stake: data.stake,
+      }
+      setBetInput(betInputData)
+      setIsLoading(false)
+    }, 1000)
   }
 
   return (
@@ -46,11 +52,17 @@ function App() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <BetForm onSubmit={handleCalculate} />
-          {result && <ResultCard result={result} />}
+          <BetForm onSubmit={handleCalculate} isLoading={isLoading} />
+          {isLoading ? (
+            <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-slate-200 dark:border-dark-border transition-colors duration-300 flex items-center justify-center min-h-[400px]">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : (
+            result && <ResultCard result={result} />
+          )}
         </div>
 
-        {result && (
+        {!isLoading && result && (
           <div className="mt-6">
             <CombinationTable combinations={result.combinations} />
           </div>

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { FaCalculator } from 'react-icons/fa'
 import { Button, Input } from '@/components/shared'
+import { LoadingSpinner } from './LoadingSpinner'
 import type { SystemType } from '@/types/bet.types'
 
 interface BetFormProps {
   onSubmit: (data: { odds: number[]; system: SystemType; stake: number }) => void
+  isLoading?: boolean
 }
 
-export const BetForm = ({ onSubmit }: BetFormProps) => {
+export const BetForm = ({ onSubmit, isLoading = false }: BetFormProps) => {
   const [odds, setOdds] = useState<string[]>([''])
   const [requiredWins, setRequiredWins] = useState<string>('')
   const [totalSelections, setTotalSelections] = useState<string>('')
@@ -187,6 +189,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
               value={requiredWins}
               onChange={(e) => setRequiredWins(e.target.value)}
               min="1"
+              disabled={isLoading}
               required
             />
             <Input
@@ -195,7 +198,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
               value={totalSelections}
               onChange={(e) => handleTotalSelectionsChange(e.target.value)}
               min={requiredWins ? (parseInt(requiredWins) + 1).toString() : "1"}
-              disabled={!requiredWins || isNaN(parseInt(requiredWins)) || parseInt(requiredWins) < 1}
+              disabled={isLoading || !requiredWins || isNaN(parseInt(requiredWins)) || parseInt(requiredWins) < 1}
               required
             />
           </div>
@@ -218,7 +221,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
                 value={odd}
                 onChange={(e) => handleOddChange(index, e.target.value)}
                 placeholder={`Odd ${index + 1}`}
-                disabled={!areOddsEnabled()}
+                disabled={isLoading || !areOddsEnabled()}
                 required
               />
             ))}
@@ -233,7 +236,7 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
             label="Total Stake"
             value={stake}
             onChange={(e) => setStake(e.target.value)}
-            disabled={!isStakeEnabled()}
+            disabled={isLoading || !isStakeEnabled()}
             required
           />
         </div>
@@ -249,10 +252,19 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
           variant="primary" 
           size="lg" 
           className="w-full"
-          disabled={!isFormValid()}
+          disabled={!isFormValid() || isLoading}
         >
-          <FaCalculator className="mr-2" />
-          Calculate Results
+          {isLoading ? (
+            <>
+              <LoadingSpinner size="sm" className="mr-2" />
+              Calculating...
+            </>
+          ) : (
+            <>
+              <FaCalculator className="mr-2" />
+              Calculate Results
+            </>
+          )}
         </Button>
       </div>
     </form>
