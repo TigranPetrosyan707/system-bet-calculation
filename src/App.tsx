@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { FaChartBar } from 'react-icons/fa'
-import { BetForm, ResultCard, CombinationTable, ThemeToggle, LoadingSpinner } from '@/components'
+import { BetForm, ResultCard, CombinationTable, ThemeToggle } from '@/components'
+import { LoadingSpinner } from '@/components/shared'
 import { useSystemBet } from '@/hooks/useSystemBet'
 import type { BetInput } from '@/types/bet.types'
 import logo from '@/assets/logo.jpg'

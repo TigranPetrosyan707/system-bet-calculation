@@ -1,5 +1,6 @@
 import { FaDollarSign, FaWallet, FaTrophy, FaArrowUp, FaArrowDown } from 'react-icons/fa'
 import type { SystemBetResult } from '@/types/bet.types'
+import { cn } from '@/utils'
 
 interface ResultCardProps {
   result: SystemBetResult
@@ -52,26 +53,29 @@ export const ResultCard = ({ result }: ResultCardProps) => {
           </p>
         </div>
         
-        <div className={`col-span-2 p-4 rounded-md border-2 transition-colors duration-300 ${
+        <div className={cn(
+          'col-span-2 p-4 rounded-md border-2 transition-colors duration-300',
           result.profit >= 0 
             ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-800' 
             : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-800'
-        }`}>
+        )}>
           <div className="flex items-center gap-2 mb-2">
             {result.profit >= 0 ? (
               <FaArrowUp className="text-green-600 dark:text-green-400 text-sm transition-colors duration-300" />
             ) : (
               <FaArrowDown className="text-red-600 dark:text-red-400 text-sm transition-colors duration-300" />
             )}
-            <p className={`text-xs font-medium uppercase tracking-wide transition-colors duration-300 ${
+            <p className={cn(
+              'text-xs font-medium uppercase tracking-wide transition-colors duration-300',
               result.profit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-            }`}>
+            )}>
               Profit/Loss
             </p>
           </div>
-          <p className={`text-3xl font-bold transition-colors duration-300 ${
+          <p className={cn(
+            'text-3xl font-bold transition-colors duration-300',
             result.profit >= 0 ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'
-          }`}>
+          )}>
             {result.profit >= 0 ? '+' : ''}${result.profit.toFixed(2)}
           </p>
         </div>

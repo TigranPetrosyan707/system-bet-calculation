@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FaMoon, FaSun } from 'react-icons/fa'
+import { Button } from './shared'
 
 export const ThemeToggle = () => {
   const [isDark, setIsDark] = useState(false)
@@ -27,9 +28,12 @@ export const ThemeToggle = () => {
   }
 
   return (
-    <button
+    <Button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 p-3 rounded-full bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border shadow-md hover:shadow-lg transition-all duration-300 z-50"
+      variant="secondary"
+      size="md"
+      noFocusRing
+      className="fixed top-4 right-4 p-3 rounded-full shadow-md hover:shadow-lg z-50"
       aria-label="Toggle dark mode"
     >
       {isDark ? (
@@ -37,7 +41,7 @@ export const ThemeToggle = () => {
       ) : (
         <FaMoon className="text-slate-700 dark:text-dark-text text-xl transition-colors duration-300" />
       )}
-    </button>
+    </Button>
   )
 }
 
