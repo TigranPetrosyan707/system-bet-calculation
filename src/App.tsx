@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { FaChartBar } from 'react-icons/fa'
-import { BetForm, ResultCard, CombinationTable } from '@/components'
+import { BetForm, ResultCard, CombinationTable, ThemeToggle } from '@/components'
 import { useSystemBet } from '@/hooks/useSystemBet'
 import type { BetInput } from '@/types/bet.types'
+import logo from '@/assets/logo.jpg'
 
 function App() {
   const [betInput, setBetInput] = useState<BetInput | null>(null)
@@ -25,13 +26,21 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-bg py-8 transition-colors duration-300">
+      <ThemeToggle />
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+          <div className="flex justify-center mb-4">
+            <img 
+              src={logo} 
+              alt="System Bet Calculator Logo" 
+              className="h-20 w-auto rounded-lg transition-opacity duration-300"
+            />
+          </div>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-dark-text mb-2 transition-colors duration-300">
             System Bet Calculator
           </h1>
-          <p className="text-slate-600">
+          <p className="text-slate-600 dark:text-dark-textSecondary transition-colors duration-300">
             Calculate potential winnings for your system bets
           </p>
         </div>

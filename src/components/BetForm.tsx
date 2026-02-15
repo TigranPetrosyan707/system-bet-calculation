@@ -166,18 +166,18 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-slate-200 dark:border-dark-border transition-colors duration-300">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-900 mb-1">System Bet Calculator</h2>
-        <p className="text-sm text-slate-500">Enter your bet details</p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-dark-text mb-1 transition-colors duration-300">System Bet Calculator</h2>
+        <p className="text-sm text-slate-500 dark:text-dark-textSecondary transition-colors duration-300">Enter your bet details</p>
       </div>
       
       <div className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-3">
+          <label className="block text-sm font-medium text-slate-700 dark:text-dark-text mb-3 transition-colors duration-300">
             System Type
           </label>
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-slate-500 dark:text-dark-textMuted mb-3 transition-colors duration-300">
             e.g., 2/3 means 2 wins from 3 selections
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -202,10 +202,10 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-3">
+          <label className="block text-sm font-medium text-slate-700 dark:text-dark-text mb-3 transition-colors duration-300">
             Odds ({odds.length} {odds.length === 1 ? 'selection' : 'selections'})
           </label>
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-slate-500 dark:text-dark-textMuted mb-3 transition-colors duration-300">
             Enter odds for each selection
           </p>
           <div className="space-y-2">
@@ -239,8 +239,8 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <p className="text-red-700 text-sm">{error}</p>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3 transition-colors duration-300">
+            <p className="text-red-700 dark:text-red-400 text-sm transition-colors duration-300">{error}</p>
           </div>
         )}
 
