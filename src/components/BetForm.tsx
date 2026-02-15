@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { FaCalculator, FaPlus, FaTrash, FaDice, FaCoins } from 'react-icons/fa'
+import { useState, useEffect } from 'react'
+import { FaCalculator } from 'react-icons/fa'
 import { Button, Input } from '@/components/shared'
 import type { SystemType } from '@/types/bet.types'
 
@@ -12,16 +12,22 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
   const [requiredWins, setRequiredWins] = useState<string>('')
   const [totalSelections, setTotalSelections] = useState<string>('')
   const [stake, setStake] = useState<string>('')
+  const [error, setError] = useState<string>('')
 
-  const handleAddOdd = () => {
-    setOdds([...odds, ''])
-  }
-
-  const handleRemoveOdd = (index: number) => {
-    if (odds.length > 1) {
-      setOdds(odds.filter((_, i) => i !== index))
+  useEffect(() => {
+    const totalSelectionsNum = parseInt(totalSelections)
+    if (!isNaN(totalSelectionsNum) && totalSelectionsNum > 0) {
+      setOdds(prevOdds => {
+        const currentLength = prevOdds.length
+        if (totalSelectionsNum > currentLength) {
+          return [...prevOdds, ...Array(totalSelectionsNum - currentLength).fill('')]
+        } else if (totalSelectionsNum < currentLength) {
+          return prevOdds.slice(0, totalSelectionsNum)
+        }
+        return prevOdds
+      })
     }
-  }
+  }, [totalSelections])
 
   const handleOddChange = (index: number, value: string) => {
     const newOdds = [...odds]
@@ -31,21 +37,40 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     
     const oddsNumbers = odds.map(odd => parseFloat(odd)).filter(odd => !isNaN(odd) && odd > 0)
     const requiredWinsNum = parseInt(requiredWins)
     const totalSelectionsNum = parseInt(totalSelections)
     const stakeNum = parseFloat(stake)
 
-    if (oddsNumbers.length === 0 || isNaN(requiredWinsNum) || isNaN(totalSelectionsNum) || isNaN(stakeNum)) {
+    if (isNaN(requiredWinsNum) || requiredWinsNum < 1) {
+      setError('Please enter a valid number of required wins (at least 1)')
       return
     }
 
-    if (requiredWinsNum > totalSelectionsNum || requiredWinsNum < 1 || totalSelectionsNum < 1) {
+    if (isNaN(totalSelectionsNum) || totalSelectionsNum < 1) {
+      setError('Please enter a valid number of total selections (at least 1)')
+      return
+    }
+
+    if (requiredWinsNum > totalSelectionsNum) {
+      setError('Required wins cannot be greater than total selections')
+      return
+    }
+
+    if (oddsNumbers.length === 0) {
+      setError('Please enter at least one valid odd')
       return
     }
 
     if (oddsNumbers.length !== totalSelectionsNum) {
+      setError(`Please enter exactly ${totalSelectionsNum} odds (one for each selection)`)
+      return
+    }
+
+    if (isNaN(stakeNum) || stakeNum <= 0) {
+      setError('Please enter a valid stake amount (greater than 0)')
       return
     }
 
@@ -60,99 +85,64 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-2xl shadow-xl border border-gray-100 space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-blue-100 rounded-xl">
-          <FaCalculator className="text-blue-600 text-2xl" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">System Bet Calculator</h2>
-          <p className="text-sm text-gray-500">Enter your bet details</p>
-        </div>
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-slate-900 mb-1">System Bet Calculator</h2>
+        <p className="text-sm text-slate-500">Enter your bet details</p>
       </div>
       
-      <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-        <div className="flex items-center gap-2 mb-3">
-          <FaDice className="text-blue-600" />
-          <label className="block text-sm font-semibold text-gray-700">
+      <div className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-3">
             System Type
           </label>
-        </div>
-        <p className="text-xs text-gray-600 mb-4">
-          e.g., 2/3 means 2 wins from 3 selections
-        </p>
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            type="number"
-            label="Required Wins"
-            value={requiredWins}
-            onChange={(e) => setRequiredWins(e.target.value)}
-            min="1"
-            required
-          />
-          <Input
-            type="number"
-            label="Total Selections"
-            value={totalSelections}
-            onChange={(e) => setTotalSelections(e.target.value)}
-            min="1"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center gap-2">
-            <FaDice className="text-purple-600" />
-            <label className="block text-sm font-semibold text-gray-700">
-              Odds
-            </label>
+          <p className="text-xs text-slate-500 mb-3">
+            e.g., 2/3 means 2 wins from 3 selections
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              type="number"
+              label="Required Wins"
+              value={requiredWins}
+              onChange={(e) => setRequiredWins(e.target.value)}
+              min="1"
+              required
+            />
+            <Input
+              type="number"
+              label="Total Selections"
+              value={totalSelections}
+              onChange={(e) => setTotalSelections(e.target.value)}
+              min="1"
+              required
+            />
           </div>
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={handleAddOdd}
-            className="flex items-center gap-2"
-          >
-            <FaPlus className="text-xs" />
-            Add Odd
-          </Button>
         </div>
-        <div className="space-y-3">
-          {odds.map((odd, index) => (
-            <div key={index} className="flex gap-2 items-start">
-              <div className="flex-1">
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="1"
-                  value={odd}
-                  onChange={(e) => handleOddChange(index, e.target.value)}
-                  placeholder={`Odd ${index + 1}`}
-                  required
-                />
-              </div>
-              {odds.length > 1 && (
-                <Button
-                  type="button"
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleRemoveOdd(index)}
-                  className="px-3"
-                >
-                  <FaTrash />
-                </Button>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="bg-green-50/50 p-4 rounded-xl border border-green-100">
-        <div className="flex items-center gap-2 mb-3">
-          <FaCoins className="text-green-600" />
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-3">
+            Odds ({odds.length} {odds.length === 1 ? 'selection' : 'selections'})
+          </label>
+          <p className="text-xs text-slate-500 mb-3">
+            Enter odds for each selection
+          </p>
+          <div className="space-y-2">
+            {odds.map((odd, index) => (
+              <Input
+                key={index}
+                type="number"
+                step="0.01"
+                min="1"
+                value={odd}
+                onChange={(e) => handleOddChange(index, e.target.value)}
+                placeholder={`Odd ${index + 1}`}
+                required
+              />
+            ))}
+          </div>
+        </div>
+
+        <div>
           <Input
             type="number"
             step="0.01"
@@ -163,17 +153,23 @@ export const BetForm = ({ onSubmit }: BetFormProps) => {
             required
           />
         </div>
-      </div>
 
-      <Button 
-        type="submit" 
-        variant="primary" 
-        size="lg" 
-        className="w-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
-      >
-        <FaCalculator />
-        Calculate Results
-      </Button>
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-3">
+            <p className="text-red-700 text-sm">{error}</p>
+          </div>
+        )}
+
+        <Button 
+          type="submit" 
+          variant="primary" 
+          size="lg" 
+          className="w-full"
+        >
+          <FaCalculator className="mr-2" />
+          Calculate Results
+        </Button>
+      </div>
     </form>
   )
 }
